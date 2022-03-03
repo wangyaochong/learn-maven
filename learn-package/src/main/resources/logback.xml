@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <property name="pattern"
+              value="[%-5level] ${user.name} %d{yyyy-MM-dd HH:mm:ss.SSS} %c %M %L[%thread] %msg%n"/>
+    <property name="log_dir" value="../logs"/>
+    <!--
+        日志输出格式：
+        %-5level
+        %d{yyyy-MM-dd HH:mm:ss.SSS}日期
+        %c类的完整名称
+        %M为method
+        %L为行号
+        %thread线程名称
+        %m或%msg为日志信息
+        %n换行
+    -->
+    <!--    控制台日志输出的appender-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+<!--        <target>System.err</target>-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.FileAppender">
+        <file>${log_dir}/logback.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="htmlFile" class="ch.qos.logback.core.FileAppender">
+        <file>${log_dir}/logback.html</file>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.html.HTMLLayout">
+                <pattern>${pattern}</pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <!--    <appender name="rollingFile" class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+    <!--    <appender name="rollingFile" class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
+    <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log_dir}/roll_logback.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${pattern}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 如果是.zip后缀，则压缩成.zip文件 -->
+            <fileNamePattern>${log_dir}/rolling.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--    异步appender，可以提高程序性能-->
+    <appender name="async" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="rollingFile"/>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="console"/>
+        <!--            <appender-ref ref="file"/>-->
+        <!--            <appender-ref ref="htmlFile"/>-->
+        <appender-ref ref="rollingFile"/>
+    </root>
+
+    <logger name="com.example.learnlogback.TestLogback" level="info" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
+</configuration>
