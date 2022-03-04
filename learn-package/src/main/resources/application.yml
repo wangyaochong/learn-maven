@@ -1,2 +1,6 @@
+
 application:
-  base: baseValue
+  base: applicationValue
+spring:
+  profiles:
+    active: @profile.name@
